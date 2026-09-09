@@ -19,7 +19,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${cors.allowed.origins:http://localhost:5173}")
+    @Value("${cors.allowed.origins:http://localhost:5173,https://tourmentquiz.netlify.app}")
     private String allowedOrigins;
 
     @Bean
