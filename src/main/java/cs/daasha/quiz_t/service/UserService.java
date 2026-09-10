@@ -70,4 +70,16 @@ public class UserService {
         User saved = userRepository.save(user);
         return toUserResponse(saved);
     }
+
+    public UserResponse createAdmin(RegisterRequest request) {
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setRole(Role.ADMIN);
+        User saved = userRepository.save(user);
+        return toUserResponse(saved);
+    }
 }

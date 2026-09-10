@@ -30,6 +30,12 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/admins")
+    public ResponseEntity<UserResponse> createAdmin(@Valid @RequestBody RegisterRequest request) {
+        UserResponse response = userService.createAdmin(request);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/tournaments")
     public ResponseEntity<List<TournamentResponse>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAllTournaments());

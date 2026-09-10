@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Quiz Tournament - Instructor API",
+    "description": "Instructor role flow: login, create tournament, add questions (manual + OpenTDB), view own tournaments, update, view player scores, delete. Instructor has no frontend UI, so this is the required demo path for that role.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "{{instructorUsername}}", "type": "string" },
+      { "key": "password", "value": "{{instructorPassword}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://quiz-tournament-backend-rapt.onrender.com" },
+    { "key": "instructorUsername", "value": "instructor1" },
+    { "key": "instructorPassword", "value": "Instructor@123" },
+    { "key": "tournamentId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Login check (whoami)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/users/me"
+      },
+      "response": []
+    },
+    {
+      "name": "2. Create tournament",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.id) { pm.collectionVariables.set('tournamentId', body.id); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/instructors/tournaments",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Science Sprint\",\n  \"category\": \"Science\",\n  \"difficulty\": \"MEDIUM\",\n  \"startDate\": \"2026-09-09T00:00:00\",\n  \"endDate\": \"2026-09-25T23:59:00\",\n  \"minPassingScore\": 50\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Add a manual question",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/instructors/tournaments/{{tournamentId}}/questions",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"questionText\": \"What is the chemical symbol for gold?\",\n  \"type\": \"MULTIPLE\",\n  \"correctAnswer\": \"Au\",\n  \"choices\": [\"Au\", \"Ag\", \"Fe\", \"Gd\"]\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Fetch 10 questions from OpenTDB",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/instructors/tournaments/{{tournamentId}}/questions/opentdb?difficulty=medium"
+      },
+      "response": []
+    },
+    {
+      "name": "5. View my tournaments",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/instructors/tournaments/my"
+      },
+      "response": []
+    },
+    {
+      "name": "6. Update tournament",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/instructors/tournaments/{{tournamentId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Science Sprint (Updated)\",\n  \"startDate\": \"2026-09-09T00:00:00\",\n  \"endDate\": \"2026-09-26T23:59:00\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. View player scores for tournament",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/tournaments/{{tournamentId}}/scores"
+      },
+      "response": []
+    },
+    {
+      "name": "8. Delete own tournament",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/instructors/tournaments/{{tournamentId}}"
+      },
+      "response": []
+    }
+  ]
+}
